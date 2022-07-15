@@ -125,7 +125,7 @@ export const productModal = {
                                 htmlLabels += `
                                 <div class="svg-input m-2"  style="left:${ x }px;top:${ y }px;" data-id="${ field.id }" >
                                     <label for="input${ field.label }">${ field.label + field.ext }</label>
-                                    <input type="text" data-bs-container="body" ${ (i==0 && getCookie("first-time") != "1") ? 'data-bs-toggle="popover" data-bs-trigger="focus" data-bs-placement="bottom" data-bs-content="'+__attr("Hit enter to continue")+'"' : '' } class="form-control input-label form-control-sm" autocomplete="off" data-lable=${ field.label } id="input${ field.label }" placeholder="${ field.default }" value="${ field.default }" maxlength="5" tabindex="${ i+1 }" >
+                                    <input type="text" data-bs-container="body" ${ (i==0 && getCookie("first-time") != "1") ? 'data-bs-toggle="popover" data-bs-trigger="focus" data-bs-placement="bottom" data-bs-content="'+ __attr("Hit enter to continue") + '"' : '' } class="form-control input-label form-control-sm" autocomplete="off" data-lable=${ field.label } id="input${ field.label }" placeholder="${ field.default }" value="${ field.default }" maxlength="5" tabindex="${ i+1 }" >
                                 </div>
                                 `;
 
