@@ -79,7 +79,7 @@ const _this = {
         initBreadcrumbs(
             [
                 { link: link('https://dashboard.kenzap.cloud'), text: __('Dashboard') },
-                { text: __('E-commerce') },
+                { text: __('SK Design') },
             ]
         );
     },
@@ -93,7 +93,7 @@ const _this = {
     //         simulateClick(link);
     //     });
     // },
-    initListeners: (type = 'partial') => {
+    initListeners: () => {
 
 
 

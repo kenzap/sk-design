@@ -13,15 +13,90 @@ export const HTMLContent = (__) => {
                     <div class="nav nav-tabs" id="nav-tab" role="tablist">
                         <a class="nav-link active" id="nav-notifications-link" data-bs-toggle="tab" data-bs-target="#nav-notifications" type="button" role="tab" aria-controls="nav-notifications" aria-selected="true" href="#">${ __('General') }</a>
                         <a class="nav-link d-none" id="nav-currency-link" data-bs-toggle="tab" data-bs-target="#nav-currency" type="button" role="tab" aria-controls="nav-currency" aria-selected="true" href="#">${ __('Currency &amp; Tax') }</a>
-                        <a class="nav-link" id="nav-payout-link" data-bs-toggle="tab" data-bs-target="#nav-payout" type="button" role="tab" aria-controls="nav-payout" aria-selected="true"  href="#">${ __('Payout') }</a>
-                        <a class="nav-link" id="nav-tax-link" data-bs-toggle="tab" data-bs-target="#nav-tax" type="button" role="tab" aria-controls="nav-tax" aria-selected="true"  href="#">${ __('Legal') }</a>
+                        <a class="nav-link d-none" id="nav-payout-link" data-bs-toggle="tab" data-bs-target="#nav-payout" type="button" role="tab" aria-controls="nav-payout" aria-selected="true"  href="#">${ __('Payout') }</a>
                     </div>
                 </nav>
                 <div class="card-body tab-content" id="nav-tabContent">
                   <div class="tab-pane fade show active" id="nav-notifications" role="tabpanel" aria-labelledby="nav-notifications-link">
-                    
-                    <h4 id="gen" class="card-title mb-4">${ __('Orders') }</h4>
+                    <h4 id="coatmat" class="card-title mb-4">${ __('Variables') }</h4>
                     <div class="row">
+                      <div class="col-lg-6">
+                        <div class="form-group row mb-3 mt-1">
+                          <label class="col-sm-3 col-form-label">${ __('Parent') }</label>
+                          <div class="col-sm-9">
+                            <textarea id="var_parent" class="form-control inp" name="var_parent" rows="6" data-type="text" style="font-size:13px;font-family: monospace;"></textarea>
+                            <p class="form-text">${ __('Provide one coating price variable name per line') }</p>
+                          </div> 
+                        </div>
+                      </div>
+          
+                      <div class="col-lg-6 d-none">
+                        <div class="form-group row mb-3 mt-1">
+                          <label class="col-sm-3 col-form-label">${ __('Colors') }</label>
+                          <div class="col-sm-9">
+                            <textarea id="colors" class="form-control inp" name="colors" rows="6" data-type="text" style="font-size:13px;font-family: monospace;"></textarea>
+                            <p class="form-text">${ __('Provide one color code per line') }</p>
+                          </div> 
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <h4 id="pricing" class="card-title mb-4">${ __('Pricing') }</h4>
+                    <table class="price-table order-form mb-3">
+                      <theader>
+                      <tr><th><div class="me-1 me-sm-3">${ __('Site') }</div></th><th class="qty"><div class="me-1 me-sm-3">${ __('Code') }</div></th><th><div class="me-1 me-sm-3">${ __('Parent') }</div></th><th><div class="me-1 me-sm-3">${ __('Title') }</div></th><th class="tp"><div class="me-1 me-sm-3">${ __('Price') }</div></th><th class="tp"><div class="me-1 me-sm-3">${ __('Unit') }</div></th><th></th></tr>
+                      <tr class="new-item-row">
+                          <td>
+
+                          </td>
+                          <td class="tp">
+                              <div class="me-1 me-sm-3 mt-2">
+                                  <input type="text" value="" autocomplete="off" class="form-control price-id" style="max-width:100px;">
+                              </div>
+                          </td>
+                          <td>
+                              <div class="me-1 me-sm-3 mt-2">
+                                  <select class="form-select price-parent inp" name="price_parent" data-type="select">
+
+                                  </select>
+                              </div>
+                          </td>
+                          <td>
+                            <div class="me-1 me-sm-3 mt-2">
+                                <input type="text" value="" autocomplete="off" placeholder="${ __(' ') }" class="form-control price-title" data-id="" data-index="" list="item-suggestions">
+                            </div>
+                          </td>
+                          <td class="price">
+                              <div class="me-1 me-sm-3 mt-2">
+                                  <input type="text" value="" autocomplete="off" class="form-control text-right price-price" style="max-width:80px;">
+                              </div>
+                          </td>
+                          <td class="price">
+                              <div class="me-1 me-sm-3 mt-2">
+                                <select class="form-select price-unit inp" name="price_unit" data-type="select">
+                                  <option value="length">${ __('Length') }</option>
+                                  <option value="m2">${ __('㎡') }</option>
+                                  <option value="hour">${ __('Hour') }</option>
+                                  <option value="unit">${ __('Unit') }</option>
+                                </select>
+                              </div>
+                          </td>
+                          <td class="align-middle text-center pt-2"> 
+                              <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 16" width="24" height="24" class="bi bi-plus-circle text-success align-middle add-price po"><path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"></path><path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z"></path></svg>
+                          </td>
+                      </tr>
+                      </theader>
+                      <tbody>
+
+
+                      </tbody>
+                    </table>
+
+                    <p class="form-text">${ __('Setup price classifications') }</p>
+
+                    <input id="price" type="text" class="form-select inp d-none" name="price" data-type="text">
+
+                    <div class="row d-none">
                       <div class="col-lg-6">
                         <div class="form-group row mb-3 mt-1">
                           <label class="col-sm-3 col-form-label">${ __('Order ID') }</label>
@@ -44,14 +119,14 @@ export const HTMLContent = (__) => {
                                 <option value="43200">${ __('12 hours') }</option>
                                 <option value="86400">${ __('24 hours') }</option>
                             </select>
-                            </select>
+
                             <p class="form-text">${ __('Auto complete orders after certain amount of time.') }</p>
                           </div>
                         </div>
                       </div>
                     </div>
                     
-                    <h4 id="gen" class="card-title mb-4 mt-4">${ __('Notifications') }</h4>
+                    <h4 id="gen" class="card-title mb-4 mt-5">${ __('Notifications') }</h4>
                     <div class="row">
                       <div class="col-lg-6">
                         <div class="form-group row mb-3 mt-1">
@@ -121,7 +196,7 @@ export const HTMLContent = (__) => {
                         </div>
                       </div>
                     </div>
-                    <div class="row">
+                    <div class="row d-none">
                       <div class="col-lg-6">
                         <div class="form-group row mb-3 mt-1">
                           <label class="col-sm-3 col-form-label">${ __('Refunded order') }</label>
@@ -144,7 +219,7 @@ export const HTMLContent = (__) => {
                         </div>
                       </div>
                     </div>
-                    <div class="row">
+                    <div class="row d-none">
                       <div class="col-lg-6">
                         <div class="form-group row mb-3 mt-1">
                           <label class="col-sm-3 col-form-label">${ __('Completed order') }</label>
@@ -169,7 +244,7 @@ export const HTMLContent = (__) => {
                         </div>
                       </div>
                     </div>
-                    <div class="row">
+                    <div class="row d-none">
                       <div class="col-lg-6">
                         <div class="form-group row mb-3 mt-1">
                           <label class="col-sm-3 col-form-label">${ __('Low stock') }</label>
@@ -195,8 +270,8 @@ export const HTMLContent = (__) => {
                       </div>
                     </div>
 
-                    <h4 id="gen" class="card-title mb-4 mt-4">${ __('Currency') }</h4>
-                      <div class="row">
+                    <h4 id="gen" class="card-title mb-4 mt-4 d-none">${ __('Currency') }</h4>
+                      <div class="row d-none">
                         <div class="col-lg-6">
                           <div class="form-group row mb-3 mt-1">
                             <label class="col-sm-3 col-form-label">${ __('Currency') }</label>
@@ -218,7 +293,7 @@ export const HTMLContent = (__) => {
                         </div>
                       </div>
 
-                      <div class="row">
+                      <div class="row d-none">
                         <div class="col-lg-6">
                           <div class="form-group row mb-3 mt-1">
                             <label class="col-sm-3 col-form-label">${ __('Position') }</label>
@@ -238,8 +313,8 @@ export const HTMLContent = (__) => {
                         </div>
                       </div>
 
-                      <h4 id="gen" class="card-title mb-4 mt-4">${ __('Tax') }</h4>
-                      <div class="row">
+                      <h4 id="gen" class="card-title mb-4 mt-4 d-none">${ __('Tax') }</h4>
+                      <div class="row d-none">
                         <div class="col-lg-6">
                           <div class="form-group row mb-3 mt-1">
                             <label class="col-sm-3 col-form-label">${ __('Tax') }</label>
@@ -271,7 +346,7 @@ export const HTMLContent = (__) => {
                         </div>
                       </div>
 
-                      <div class="row">
+                      <div class="row d-none">
                         <div class="col-lg-6">
                           <div class="form-group row mb-3 mt-1">
                             <label class="col-sm-3 col-form-label">${ __('Percent') }</label>
@@ -292,8 +367,8 @@ export const HTMLContent = (__) => {
                         </div>
                       </div>
 
-                      <h4 id="gen" class="card-title mb-4 mt-4">${ __('Fees') }</h4>
-                      <div class="row">
+                      <h4 id="gen" class="card-title mb-4 mt-4 d-none">${ __('Fees') }</h4>
+                      <div class="row d-none">
                         <div class="col-lg-6">
                           <div class="form-group row mb-3 mt-1">
                             <label class="col-sm-3 col-form-label">${ __('Service') }</label>
@@ -325,7 +400,7 @@ export const HTMLContent = (__) => {
                         </div>
                       </div>
 
-                      <div class="row">
+                      <div class="row d-none">
                         <div class="col-lg-6">
                           <div class="form-group row mb-3 mt-1">
                             <label class="col-sm-3 col-form-label">${ __('Percent') }</label>
@@ -396,87 +471,6 @@ export const HTMLContent = (__) => {
                               <textarea id="happy_hours_list" class="form-control inp" name="happy_hours_list" rows="2" data-type="text" style="font-size:13px;font-family: monospace;"></textarea>
                               <p class="form-text">${ __('Provide one happy hour, its discount per line. Example: Monday 15:00-17:30 10.') }</p>
                             </div>
-                          </div>
-                        </div>
-                      </div>
-
-                      <h4 id="gen" class="card-title mb-4 mt-4">${ __('Printing') }</h4>
-                      <div class="row">
-                        <div class="col-lg-6">
-                          <div class="form-group row mb-3 mt-1">
-                            <label class="col-sm-3 col-form-label">${ __('Action') }</label>
-                            <div class="col-sm-9">
-                              <select id="print_action" class="form-select inp" name="print_action" data-type="select">
-                                <option value="system">${ __('Default printing dialogue') }</option>
-                                <option value="app">${ __('Kenzap print app') }</option>
-                              </select>
-                              <p class="form-text">${ __('Choose action when printing icon is clicked.') }</p>
-                            </div> 
-                          </div>
-                        </div>
-                        <div class="col-lg-6">
-                          <div class="form-group row mb-3 mt-1">
-                            <label class="col-sm-3 col-form-label">${ __('Print') }</label>
-                            <div class="col-sm-9">
-                              <select id="print_action" class="form-select inp" name="print_action" data-type="select">
-                                <option value="system">${ __('Invoice') }</option>
-                                <option value="app">${ __('Receipt') }</option>
-                              </select>
-                              <p class="form-text">${ __('Default printing media.') }</p>
-                            </div> 
-                          </div>
-                        </div>
-                      </div>
-                      
-                      <div class="row">
-                        <div class="col-lg-6">
-                          <div class="form-group row mb-3 mt-1">
-                            <label class="col-sm-3 col-form-label">${ __('Receipts') }</label>
-                            <div class="col-sm-9">
-                              <textarea id="receipt_template" class="form-control inp" name="receipt_template" rows="20" data-type="text" style="font-size:13px;font-family: monospace;"></textarea>
-                              <p class="form-text">${ __('Default receipt template for printers.') }</p>
-                            </div> 
-                          </div>
-                        </div>
-            
-                        <div class="col-lg-6">
-                          <div class="form-group row mb-3 mt-1 ">
-                            <label class="col-sm-3 col-form-label">${ __('Auto mode') }</label>
-                            <div class="col-sm-9">
-                              <div class="form-check">
-                                <input id="auto_print" class="form-check-input inp-local" name="auto_print" type="checkbox" value="1" data-type="checkbox">
-                                <label class="form-check-label" for="auto_print">
-                                  ${ __('Auto print') }
-                                </label>
-                              </div>
-                              <p class="form-text">${ __('Auto print new orders from this device. Other devices will not be affected.') }</p>
-                            </div> 
-                          </div>
-                        </div>
-                      </div>
-
-                      <div class="row">
-                        <div class="col-lg-6">
-                          <div class="form-group row mb-3 mt-1">
-                            <label class="col-sm-3 col-form-label">${ __('QR code') }</label>
-                            <div class="col-sm-9">
-                              <div class="form-check">
-                                <input id="qr_print" class="form-check-input inp" name="qr_print" type="checkbox" value="1" data-type="checkbox">
-                                <label class="form-check-label" for="qr_print">
-                                  ${ __('QR code printing') }
-                                </label>
-                              </div>
-                              <p class="form-text">${ __('Allow "Scan me to order" QR-code printing from orders dashboard.') }</p>
-                            </div>
-                          </div>
-                        </div>
-                        <div class="col-lg-6">
-                          <div class="form-group row mb-3 mt-1">
-                            <label class="col-sm-3 col-form-label">${ __('QR printing') }</label>
-                            <div class="col-sm-9">
-                              <textarea id="qr_template" class="form-control inp" name="qr_template" rows="10" data-type="text" style="font-size:13px;font-family: monospace;"></textarea>
-                              <p class="form-text">${ __('Default "Scan me to order" template for printers.') }</p>
-                            </div> 
                           </div>
                         </div>
                       </div>

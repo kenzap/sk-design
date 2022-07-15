@@ -44,3 +44,7 @@ footer {
   border-radius: unset !important;
   object-fit: fill;
 }
+
+.pr-parent {
+  font-size: 1rem;
+}

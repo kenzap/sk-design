@@ -1,5 +1,25 @@
 import { getCookie, getSiteId, simulateClick, headers } from '@kenzap/k-cloud';
 
+export const API_KEY = "Qz3fOs8Ghi7rpaW8BOlNgUyo7ANWYoKbRoUa8UkYd2I4FlAgUYFqzPM33IxqoFYa";
+
+export const spaceID = () => {
+
+    return "1002170"
+}
+
+export const stringToHash = str => {
+
+    let hash = 0
+    for (let i = 0; i < str.length; ++i)
+        hash = Math.imul(31, hash) + str.charCodeAt(i)
+  
+    hash = 'c'+Math.abs(hash);
+    
+    // console.log(hash);
+
+    return hash;
+}
+
 export const mt = (val) => {
 
     return (""+val).length < 2 ? "0"+val : val;
@@ -137,6 +157,8 @@ export const formatStatus = (__, st) => {
     switch(_this.state.settings.currency_symb_loc){
         case 'left': price = _this.state.settings.currency_symb + price; break;
         case 'right': price = price + _this.state.settings.currency_symb; break;
+        case 'left_space': price = _this.state.settings.currency_symb + ' ' + price; break;
+        case 'right_space': price = price + ' ' + _this.state.settings.currency_symb; break;
     }
 
     return price;
@@ -171,18 +193,21 @@ export const formatTime = (__, timestamp) => {
 export const onlyNumbers = (sel, chars) => {
 
     if(!document.querySelector(sel)) return;
+
+    for(let el of document.querySelectorAll(sel)){
     
-    document.querySelector(sel).addEventListener('keypress', (e) => {
+        el.addEventListener('keypress', (e) => {
 
-        // console.log(e.which);
+            // console.log(e.which);
 
-        if((!chars.includes(e.which) && isNaN(String.fromCharCode(e.which))) || e.which == 32 || (document.querySelector(sel).value.includes(String.fromCharCode(e.which)) && chars.includes(e.which))){
+            if((!chars.includes(e.which) && isNaN(String.fromCharCode(e.which))) || e.which == 32 || (document.querySelector(sel).value.includes(String.fromCharCode(e.which)) && chars.includes(e.which))){
 
-            // stop character from entering input
-            e.preventDefault(); 
-            return false;
-        }
-    });
+                // stop character from entering input
+                e.preventDefault(); 
+                return false;
+            }
+        });
+    }
 }
 
 // nums only validation
@@ -398,6 +423,29 @@ export const playSound = (_this, max) => {
     }, 5000);
 
     // console.log('playSound');
+}
+
+export const lazyLoad = () => {
+
+    let lazyImages = [].slice.call(document.querySelectorAll("img.lazy"));
+    if (document.querySelector("body").dataset.lazyLoading != '1'){
+
+        document.querySelector("body").dataset.lazyLoading = '1';
+        setTimeout(function() {
+            lazyImages.forEach(function(lazyImage) {
+                if ((lazyImage.getBoundingClientRect().top <= window.innerHeight && lazyImage.getBoundingClientRect().bottom >= 0) && getComputedStyle(lazyImage).display !== "none") {
+
+                    lazyImage.src = lazyImage.dataset.src;
+                    lazyImage.srcset = lazyImage.dataset.srcset;
+                    lazyImage.classList.remove("lazy");
+                    lazyImages = lazyImages.filter(function(image) {
+                        return image !== lazyImage;
+                    });
+                }
+            });
+            document.querySelector("body").dataset.lazyLoading = '0';
+        }, 0);
+    }
 }
 
 export const renderNotifications = (_this, messages) => {
@@ -623,6 +671,61 @@ export const printQR = (_this, order) => {
     let str = 'kenzapprint://kenzapprint.app?data='+encodeURIComponent(JSON.stringify(data));
 
     return str;
+}
+
+/**
+ * Converts degrees to radians
+ * 
+ * @param deg {Integer}
+ * @returns {Integer} - radians
+ */
+export const degToRad = (deg) => {
+
+    return (deg - 90) * Math.PI / 180.0;
+}
+
+/*
+* Load additional JS or CSS depencies
+*
+* @param    dep       dependecy. Ex.: hiebee.min.js 
+* @param    cb        function to call after script is loaded (optional)       
+* @return 	{Boolen} 	result status 
+* 
+*/
+export const loadAddon = (dep, version, cb) => {
+
+    // dependency already loaded, skip
+    if(document.getElementById(dep)){ if(typeof cb === 'function') cb.call(); return; }
+
+    // detect dependency type
+    let t = dep.split('.').slice(-1)[0];
+    // console.log(dep+'loadAddon'+t);
+    switch(t){
+      case 'js':
+        
+        let js = document.createElement("script");
+        js.setAttribute("src", dep);
+        js.id = dep;
+        js.onload = js.onreadystatechange = function() {
+ 
+          if(!this.readyState || this.readyState == 'complete')
+            if(typeof cb === 'function') cb.call();
+        };
+        document.body.appendChild(js);
+        
+      break;
+      case 'css':
+
+        var head  = document.getElementsByTagName('head')[0];
+        var css  = document.createElement('link');
+        css.id   = dep;
+        css.rel  = 'stylesheet';
+        css.type = 'text/css';
+        css.href = dep;
+        head.appendChild(css);
+
+      break;
+    }
 }
 
 export const getCurrencies = () => {

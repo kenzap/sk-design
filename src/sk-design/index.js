@@ -1,8 +1,10 @@
 // js dependencies
-import { headers, showLoader, hideLoader, parseApiError, getCookie, onClick, onChange, simulateClick, spaceID, toast, link } from '@kenzap/k-cloud';
-import { getProductId, makeNumber, numsOnly, priceFormat, onlyNumbers } from "../_/_helpers.js"
+import { headers, showLoader, hideLoader, parseApiError, getCookie, onClick, onChange, simulateClick, spaceID, toast, link, __ } from '@kenzap/k-cloud';
+import { getProductId, escape, unescape, onlyNumbers, priceFormat, degToRad } from "../_/_helpers.js"
 import { HTMLContent } from "../_/_cnt_product_edit_sk_design.js"
-import { Polyline } from "../_/_2d.js"
+import { Polyline, Arc } from "../_/_2d.js"
+
+const CDN = 'https://kenzap-sites.oss-ap-southeast-1.aliyuncs.com/';
 
 // where everything happens
 const _this = {
@@ -14,8 +16,10 @@ const _this = {
     state: {
         ajaxQueue: 0,
         settings: {}, // where all requested settings are cached
+        sk_settings: {}, // where all requested settings are cached
         firstLoad: true,
-        sketch: { mode: 'preview', polyline_last: { id: null } }
+        product: { input_fields: [] },
+        sketch: { mode: 'preview', type: '', mousedown: false, last: { id: null }, angle: false }
     },
     getData: () => {
 
@@ -36,12 +40,17 @@ const _this = {
                         type:       'find',
                         key:        'ecommerce-product',
                         id:         id,   
-                        fields:     ['_id', 'id', 'test', 'input_fields', 'formula', 'calc_price', 'updated']
+                        fields:     ['_id', 'id', 'test', 'input_fields', 'formula', 'formula_price', 'calc_price', 'parts', 'updated']
                     },
                     settings: {
                         type:       'get',
-                        key:        'sk-design',
+                        key:        'ecommerce-settings',
                         fields:     ['currency', 'currency_symb', 'currency_symb_loc', 'tax_calc', 'tax_auto_rate', 'tax_rate', 'tax_display'],
+                    },
+                    sk_settings: {
+                        type:       'get',
+                        key:        'sk-settings',
+                        fields:     ['price'],
                     },
                     locale: {
                         type:       'locale',
@@ -62,18 +71,17 @@ const _this = {
             if (response.success){
 
                 _this.state.settings = response.settings;
+                _this.state.sk_settings = response.sk_settings;
+                _this.state.product = response.product;
+
+                console.log(_this.state.sk_settings);
 
                 // check product response
                 if (response.product.length == 0) { return; }
 
                 // get core html content 
-                document.querySelector('#contents').insertAdjacentHTML('beforeend', HTMLContent(__)); // innerHTML = HTMLContent(__);
+                document.querySelector('#contents').insertAdjacentHTML('beforeend', HTMLContent()); // innerHTML = HTMLContent(__);
 
-                // // let st = parseInt(data.list[i].status);
-                // let img = 'https://cdn.kenzap.com/loading.png';
-
-                // // if(typeof(response.product[i].img) !== 'undefined' && response.product[i].img[0] == 'true') img = 'https://preview.kenzap.cloud/S1000452/_site/images/product-'+response.product[i].id+'-1-100x100.jpeg?1630925420';
-                
                 // load images if any
                 _this.loadDrawing(response.product);
 
@@ -90,44 +98,75 @@ const _this = {
 
         let d = document;
 
+        _this.state.sketch.mode = 'drawing';
+
+        // console.log(product);
+
+        // return;
+
         // input fields
-        product.input_fields.forEach(obj => {
-
-            let html = _this.structInputRow(obj);
-
-            if(!document.querySelector('#field'+obj.id)) document.querySelector('.input-fields').insertAdjacentHTML('beforeend', html);
+        if(product.input_fields){
             
-            if(!document.querySelector('#svg g[data-id="' + obj.id+ '"]')){
+            simulateClick(document.querySelector('#editing')); 
 
-                let points_arr = obj.points.split(' ');
+            product.input_fields.forEach(obj => {
 
-                _this.state.sketch.polyline = new Polyline({ points: [{x: points_arr[0], y: points_arr[1] }], mode: 'drawing', id: obj.id });
-                _this.state.sketch.polyline.setCoords({ points: [{x: points_arr[2], y: points_arr[3] }], mode: 'drawing' });
-                _this.state.sketch.polyline.setEndCoords({ points: [{x: points_arr[2], y: points_arr[3] }], mode: 'drawing' });
-            }
-        })
+                let html = _this.structInputRow(obj);
+
+                if(!document.querySelector('#field'+obj.id)) document.querySelector('.input-fields').insertAdjacentHTML('beforeend', html);
+                
+                if(!document.querySelector('#svg g[data-id="' + obj.id+ '"]')){
+
+                    switch(obj.type){
+
+                        case 'polyline':
+
+                            let points_arr = obj.points.split(' ');
+                            _this.state.sketch.polyline = new Polyline({ points: [{x: points_arr[0], y: points_arr[1] }], mode: 'drawing', id: obj.id });
+                            _this.state.sketch.polyline.setCoords({ points: [{x: points_arr[2], y: points_arr[3] }], mode: 'drawing' });
+                            _this.state.sketch.polyline.setEndCoords({ points: [{x: points_arr[2], y: points_arr[3] }], mode: 'drawing' });
+                        break;
+                        case 'arc':
+
+                            // console.log(obj);
+
+                            obj.params = typeof(obj.params) == 'string' ? {} : obj.params;
+
+                            // obj.params = JSON.parse(unescape(obj.params)); 
+                          
+                            _this.state.sketch.arc = new Arc({ params: { x: obj.params.x, y: obj.params.y, radius: obj.params.radius, startAngle: obj.params.startAngle, endAngle: obj.params.endAngle }, mode: 'drawing', id: obj.id });
+                        break;
+                    }
+                }
+            });
+
+            _this.refreshFields();
+        }
 
         _this.listeners.inputFieldListeners();
 
         _this.state.sketch.polyline = null;
 
-        _this.state.sketch.mode = 'drawing';
-
         // calculate prce
-        d.querySelector("#calc_price").value = product.calc_price;
+        d.querySelector("#calc_price").value = product.calc_price ? product.calc_price : 'default';
 
         // formula
         d.querySelector("#formula").value = product.formula;
+        d.querySelector("#formula_price").value = product.formula_price;
 
         // validate formula
         document.querySelector("#formula").addEventListener('keyup', (e) => {
 
             let formula = e.currentTarget.value;
-            let labels = "";
+            let labels = "COATING ";
+
+            // selected coating price
+            formula = formula.replaceAll("COATING", 1);
+
             for(let div of document.querySelectorAll('.input-fields > div')){
 
                 labels += div.querySelector('.field-label').value + " ";
-                formula = formula.replace(div.querySelector('.field-label').value, parseFloat(div.querySelector('.field-default').value));
+                formula = formula.replaceAll(div.querySelector('.field-label').value, parseFloat(div.querySelector('.field-default').value));
             }
             labels = labels.trim();
 
@@ -139,83 +178,72 @@ const _this = {
                 document.querySelector("#formula").setCustomValidity("");
             }catch(e){
                 document.querySelector("#formula").setCustomValidity( __("Invalid formula") );
-                document.querySelector(".formula-hint").innerHTML = __("Invalid formula. Use one of the following letters only: "+labels);
+                document.querySelector(".formula-hint").innerHTML = __("Invalid formula. Use one of the following letters only: " + labels);
             }
 
             document.querySelector("#formula").parentElement.classList.add('was-validated');
             
-            if(result>0) document.querySelector(".formula-hint").innerHTML = __("Result: <b>%1$</b> based on the input fields default values", result);
-        
-            // console.log(result);
-            
-
-            // if((!chars.includes(e.which) && isNaN(String.fromCharCode(e.which))) || e.which == 32 || (document.querySelector(sel).value.includes(String.fromCharCode(e.which)) && chars.includes(e.which))){
-    
-            //     // stop character from entering input
-            //     e.preventDefault(); 
-            //     return false;
-            // }
+            if(result>0) document.querySelector(".formula-hint").innerHTML = __("Result: <b>" + result / 1000000 + " ㎡</b> based on the input fields default values", result);
         });
 
+        // validate formula price
+        document.querySelector("#formula_price").addEventListener('keyup', (e) => {
 
+            let formula = e.currentTarget.value;
+            let labels = "COATING ";
 
-        // // general section
-        // d.querySelector("#p-title").value = product.title;
-        // d.querySelector("#p-sdesc").value = product.sdesc;
-        // d.querySelector("#p-ldesc").value = product.ldesc;
+            // selected coating price
+            formula = formula.replaceAll("COATING", 1);
 
-        // // price section
-        // d.querySelector("#p-price").value = product.price; onlyNumbers('#p-price', [8, 46]);
-        // // d.querySelector("#p-priced").value = product.priced;
-        // d.querySelector("#p-price-symb").innerHTML = _this.state.settings['currency_symb'] ? _this.state.settings['currency_symb'] : "";
+            for(let price of _this.state.sk_settings.price){
 
-        // // discounts 
-        // document.querySelector(".discount-blocks").dataset.data = encodeURIComponent(JSON.stringify(product.discounts ? product.discounts : []));
-        // _this.renderDiscounts();
+                if(price.id.length == 0) continue;
 
-        // // price variation section
-        // // console.log(product.variations);
-        // for(let m in product.variations){ 
+                labels += price.id + " ";
+                formula = formula.replaceAll(price.id, parseFloat(price.price));
+            }
 
-        //     let vr = product.variations[m];
-        //     let data = []; data['title'] = vr['title']; data['type'] = vr['type']; data['required'] = vr['required']; data['index'] = m;
-  
-        //     d.querySelector(".variation-blocks").innerHTML += _this.structMixBlock(data);
+            for(let div of document.querySelectorAll('.input-fields > div')){
 
-        //     for(let n in vr['data']){
-  
-        //       let vrd = vr['data'][n];
-        //       let data = []; 
-        //       data['title'] = vrd['title'];
-        //       data['price'] = vrd['price'];
-        //       data['type'] = vr['type'];
-  
-        //       // console.log(data['title']);
-        //       d.querySelector(".var-block[data-index='"+m+"'] .offer-pricef").innerHTML += _this.structMixRow(data);
-        //     }
-        // }
-
-        // // inventory
-        // if(!product['stock']) product['stock'] = {management: false, sku: "", qty: 0, low_threshold: 0};
-
-        // for(let el of document.querySelectorAll('.stock-cont')){ product['stock']['management'] == true ? el.classList.remove('d-none') : el.classList.add('d-none'); }
-        // document.querySelector('#stock_sku').value = product['stock']['sku'] ? product['stock']['sku'] : "";
-        // document.querySelector('#stock_management').checked = product['stock']['management']; //  == "1" ? true: false;
-        // document.querySelector('#stock_quantity').value = product['stock']['qty'] ? makeNumber(product['stock']['qty']) : 0;
-        // document.querySelector('#stock_low_threshold').value = product['stock']['low_threshold'] ? makeNumber(product['stock']['low_threshold']) : 0;
-
-        // // init status box
-        // document.querySelector('#p-status'+product.status).checked = true;
-
-        // // init categories
-        // let pcats = document.querySelector('#p-cats');
-        // if (product.cats) pcats.setAttribute('data-simple-tags', product.cats);
-        // const tags = new simpleTags(__, pcats);
+                labels += div.querySelector('.field-label').value + " ";
+                formula = formula.replaceAll(div.querySelector('.field-label').value, parseFloat(div.querySelector('.field-default').value));
+            }
         
+            // console.log(formula);
+
+            labels = labels.trim();
+
+            let result = 0;
+
+            try{
+                document.querySelector(".formula_price-hint").innerHTML = '';
+                result = eval(formula);
+                document.querySelector("#formula_price").setCustomValidity("");
+            }catch(e){
+                document.querySelector("#formula_price").setCustomValidity( __("Invalid price formula") );
+                document.querySelector(".formula_price-hint").innerHTML = __("Invalid price formula. Use one of the following letters only: " + labels);
+            }
+
+            document.querySelector("#formula_price").parentElement.classList.add('was-validated');
+            
+            if(result>0) document.querySelector(".formula_price-hint").innerHTML = __("Result: <b>" + priceFormat(_this, result) + "</b> based on the input fields default values", result);
+        });
+
+        // parts   
+        if(!product.parts) product.parts = [];
+        if(!Array.isArray(product.parts)) product.parts = [];
+
+        product.parts.forEach(part => {
+
+            document.querySelector("#parts").value += part.id + '\n';
+        });
+
+        // let arc = new Arc({ params: { x: 278, y: 279, radius: 25, startAngle: 60, endAngle: 170 }});
+        // console.log(arc.getPath());
+        // document.getElementById("arc").setAttribute("d", arc.getPath());
+        // <path id="arc" fill="transparent" style="stroke-width:3px;stroke:#ff1900;fill:rgba(255, 255, 255, 0);"></path>
     },
     initListeners: () => {
-
-        // console.log('initListeners ');
 
         if(!_this.state.firstLoad) return;
 
@@ -224,27 +252,6 @@ const _this = {
         
         // modal success button
         onClick('.p-modal .btn-primary', _this.listeners.modalSuccessBtn);
-
-        // // add discount
-        // onClick('.add-discount', _this.listeners.addDiscountBlock);
-
-        // // add variation block
-        // onClick('.add-mix-block', _this.listeners.addMixBlock);
-        
-        // // edit variation block
-        // onClick('.edit-block', _this.listeners.editBlock);
-
-        // // remove variation block
-        // onClick('.remove-block', _this.listeners.removeBlock);
-
-        // // add variation option
-        // onClick('.add-mix', _this.listeners.addMixOption);
-
-        // // remove variation option
-        // onClick('.remove-option', _this.listeners.removeOption);
-
-        // // stock management enable disable
-        // onClick('.stock-management', _this.listeners.stockManagement);
 
         _this.state.firstLoad = false;
     },
@@ -290,131 +297,106 @@ const _this = {
             if(!c) return;
 
             let id = e.currentTarget.dataset.id;
+            
+            console.log('remove' + id);
 
-            if(document.querySelector('#svg g[data-id="' + id+ '"]')) document.querySelector('#svg g[data-id="' + id + '"]').remove();
+            if(document.querySelector('#svg g[data-id="' + id + '"]')) document.querySelector('#svg g[data-id="' + id + '"]').remove();
             if(document.querySelector('.input-fields #field' + id)) document.querySelector('.input-fields #field' + id).remove();
+            if(document.querySelector('.svg-input[data-id="' + id + '"]')) document.querySelector('.svg-input[data-id="' + id + '"]').remove();
+        },
+
+        // sync select field label update with sketch labels 
+        inputFieldChange: (e) => {
+
+            console.log(e.currentTarget.value);
+
+            let id = e.currentTarget.parentElement.parentElement.id.replace('field', '');
+
+            document.querySelector('.svg-input[data-id="' + id + '"] > label').innerHTML = e.currentTarget.value;
         },
 
         saveProduct: (e) => {
             
             e.preventDefault();
 
-            let data = {};
+            // running updates cuncurrently causes data loss
+            setTimeout(() => {
 
-            data['input_fields'] = [];
+                let data = {};
 
-            // iterate through input fields
-            for(let div of document.querySelectorAll('.input-fields > div')){
+                data['input_fields'] = [];
 
-                let obj = {};
+                // iterate through input fields
+                for(let div of document.querySelectorAll('.input-fields > div')){
 
-                obj['id'] = div.id.replace('field','');
-                obj['points'] = div.dataset.points;
-                obj['label'] = div.querySelector('.field-label').value;
-                obj['default'] = parseFloat(div.querySelector('.field-default').value);
-                obj['min'] = parseFloat(div.querySelector('.field-min').value);
-                obj['max'] = parseFloat(div.querySelector('.field-max').value);
+                    let obj = {};
 
-                data['input_fields'].push(obj);
-            }
+                    obj['id'] = div.id.replace('field','');
+                    obj['points'] = div.dataset.points;
+                    obj['type'] = div.dataset.type;
+                    obj['params'] = obj['type'] == 'arc' ? JSON.parse(unescape(div.dataset.params)) : {};
+                    obj['label'] = div.querySelector('.field-label').value;
+                    obj['default'] = parseFloat(div.querySelector('.field-default').value);
+                    obj['min'] = parseFloat(div.querySelector('.field-min').value);
+                    obj['max'] = parseFloat(div.querySelector('.field-max').value);
 
-            data['calc_price'] = document.querySelector('#calc_price').value;
-            data['formula'] = document.querySelector('#formula').value;
-
-
-            // // map categories
-            // data["cats"] = [];
-            // for( let cat of document.querySelectorAll('#p-cats ul li') ){
-
-            //     data["cats"].push(cat.innerHTML.replace('<a>×</a>','').trim());
-            // }
-             
-            // // link uploaded images
-            // data["img"] = [];
-            // for( let img of document.querySelectorAll('.p-img') ){
-
-            //     let tf = !img.getAttribute('src').includes("placeholder") ? true : false;
-            //     data["img"].push(tf);
-            // }
-
-            // // discount list
-            // data["discounts"] = JSON.parse(decodeURIComponent(document.querySelector('.discount-blocks').dataset.data));
-
-            // // inventory
-            // data["stock"] = {};
-            // data['stock']['sku'] = document.querySelector('#stock_sku').value;
-            // data['stock']['management'] = document.querySelector('#stock_management').checked;
-            // data['stock']['qty'] = document.querySelector('#stock_quantity').value; 
-            // data['stock']['low_threshold'] = document.querySelector('#stock_low_threshold').value;
-            
-            // // status
-            // data["status"] = document.querySelector('input[name="p-status"]:checked').value;
-   
-            // // map mix and match
-            // data["variations"] = [];
-            // let block_index = 0;
-            // for( let block of document.querySelectorAll('.variation-blocks .var-block') ){
-
-            //     let option_index = 0;
-            //     for( let option of block.querySelectorAll('.offer-pricef li') ){
-
-            //         if(typeof(data["variations"][block_index]) === 'undefined')
-            //         data["variations"][block_index] = 
-            //         { 
-            //             'title': block.getAttribute('data-title'),
-            //             'type': block.getAttribute('data-type'),
-            //             'required': block.getAttribute('data-required'),
-            //             'data': []
-            //         };
-                    
-            //         data["variations"][block_index]['data'][option_index] = 
-            //         {
-            //             'title': option.getAttribute('data-title'),
-            //             'price': option.getAttribute('data-price'),
-            //             'cond': option.getAttribute('data-cond')
-            //         };
-            //         option_index++;
-            //     }
-            //     block_index++;
-            // }
-
-            console.log(data);
-        
-            let id = getProductId();
-            let sid = spaceID();
-
-            showLoader();
-
-            // send data
-            fetch('https://api-v1.kenzap.cloud/', {
-                method: 'post',
-                headers: headers,
-                body: JSON.stringify({
-                    query: {
-                        product: {
-                            type:       'update',
-                            key:        'ecommerce-product',
-                            id:         id,         
-                            sid:        sid,
-                            data:       data
-                        }
-                    }
-                }) 
-            })
-            .then(response => response.json())
-            .then(response => {
-
-                if (response.success){
-
-                    // upload desc images
-                    _this.uploadImages();
-                    
-                }else{
-
-                    parseApiError(response);
+                    data['input_fields'].push(obj);
                 }
-            })
-            .catch(error => { parseApiError(error); });
+
+                data['calc_price'] = document.querySelector('#calc_price').value;
+                data['formula'] = document.querySelector('#formula').value.trim();
+                data['formula_price'] = document.querySelector('#formula_price').value.trim();
+                data['parts'] = [];
+                
+                console.log(document.querySelector("#parts"));
+
+                document.querySelector("#parts").value.trim().split('\n').forEach(el => {
+
+                    data['parts'].push({id: el});
+                }); 
+                //  = product.parts.join('\n');
+
+                console.log(data); 
+            
+                let id = getProductId();
+                let sid = spaceID();
+
+                // showLoader();
+
+                // send data
+                fetch('https://api-v1.kenzap.cloud/', {
+                    method: 'post',
+                    headers: headers,
+                    body: JSON.stringify({
+                        query: {
+                            product: {
+                                type:       'update',
+                                key:        'ecommerce-product',
+                                id:         id,         
+                                sid:        sid,
+                                data:       data
+                            }
+                        }
+                    }) 
+                })
+                .then(response => response.json())
+                .then(response => {
+
+                    if (response.success){
+
+                        // console.log('sk saved');
+
+                        // upload desc images
+                        _this.uploadImages();
+                        
+                    }else{
+
+                        parseApiError(response);
+                    }
+                })
+                .catch(error => { parseApiError(error); });
+
+            }, 1000);
         },
 
         openImage: (e) => {
@@ -470,7 +452,7 @@ const _this = {
 
             _this.state.sketch.mode = e.currentTarget.id;
 
-            console.log('sketchMode'+e.currentTarget.id);
+            // console.log('sketchMode'+e.currentTarget.id);
 
             if(e.currentTarget.id == 'preview'){ document.querySelector("#svg").style.zIndex = '-2'; }else{ document.querySelector("#svg").style.zIndex = '2'; }
             
@@ -493,21 +475,31 @@ const _this = {
 
         modalSuccessBtnFunc: null
     },
+    // get next available label number
+    getNextLabel: (type) => {
+
+        let alphabet_lines = ["A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z"];
+        let alphabet_angles = ["α","β","γ","δ","ε","ζ","η","θ","ι","κ","λ"];
+        let alphabet;
+
+        // prevent same label being used twice
+        for(let label of document.querySelectorAll('.input-fields > div .field-label[data-type="polyline"]')){ alphabet_lines = alphabet_lines.filter(function(el) { return el !== label.value }) }
+        for(let label of document.querySelectorAll('.input-fields > div .field-label[data-type="arc"]')){ alphabet_angles = alphabet_angles.filter(function(el) { return el !== label.value }) }
+        
+        return alphabet = type == "polyline" ? alphabet_lines : alphabet_angles;
+    },
     structInputRow: (obj) => {
 
         // available labels
-        let alphabet = ["A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z"];
-
-        // prevent same label being used twice
-        for(let label of document.querySelectorAll('.input-fields > div .field-label')){ alphabet = alphabet.filter(function(el) { return el !== label.value }) }
+        let alphabet = _this.getNextLabel(obj.type);
 
         // labels select
         let options = ''; alphabet.forEach((el) => { options += '<option value="' + el + '" '+(obj.label==el ? 'selected':'')+'>' + el + '</option>'; });
 
         return`
-                <div id="field${ obj.id }" class="d-flex flex-row bd-highlight mb-0" data-points="${ obj.points }">
+                <div id="field${ obj.id }" class="d-flex flex-row bd-highlight mb-0" data-type="${ obj.type }" data-points="${ obj.points }" data-params="${ escape(JSON.stringify(obj.params ? obj.params : {})) }">
                     <div class="me-3" >
-                        <select class="form-select field-label" style="width:64px" aria-label="Default select example">
+                        <select class="form-select field-label" style="width:64px" data-type="${ obj.type }" aria-label="Default select example">
                             ${ options }
                         </select>
                         <p class="form-text">${ __('label') }</p>
@@ -535,6 +527,8 @@ const _this = {
     },
     loadDrawing: (product) => {
 
+        // console.log(product);
+
         let d = document;
         let id = getProductId();
         let sid = spaceID();
@@ -544,11 +538,16 @@ const _this = {
           let img = 'https://account.kenzap.com/images/placeholder.jpg';
           t+=`
           <div class="p-img-cont sketch-cont float-start" data-mode="preview" style="max-width:100%;">
-            <p data-index="sketch${i}" style="position: relative;">
-              <img class="p-img images-sketch${i}" data-index="sketch${i}" src="${img}" />
-              <svg id="svg" xmlns="http://www.w3.org/2000/svg" style="width: 100%; height: 100%;display: block; position: absolute; top: 0; left: 0; z-index: -2;"></svg>
-              <span class="remove hd" title="${ __('Remove') }">×</span>
-            </p>
+            <div data-index="sketch${i}" class="pe-3" style="position: relative;">
+              <img class="p-img images-sketch${i}" data-index="sketch${i}" src="${img}" style="max-width:500px;max-height:500px;"/>
+              <svg id="svg" xmlns="http://www.w3.org/2000/svg" style="width: 100%; height: 100%;display: block; position: absolute; top: 0; left: 0; z-index: -2;">
+                
+              </svg>
+              <span class="remove po hd" title="${ __('Remove') }">×</span>
+              <div class="labels">
+
+              </div>
+            </div>
             <input type="file" name="img[]" data-type="search" data-index="sketch${i}" class="sketchfile aif-sketch${i} d-none">
           </div>`;
         }
@@ -572,11 +571,19 @@ const _this = {
 
             e.preventDefault();
 
-            if(_this.state.sketch.mode == 'drawing'){ _this.state.sketch.polyline = new Polyline({ points: [{x: e.offsetX, y: e.offsetY }], mode: 'drawing' }); }
-            
-            if(_this.state.sketch.mode == 'editing'){ _this.state.sketch.polyline = new Polyline({ points: [{x: e.offsetX, y: e.offsetY }], mode: 'editing', id: _this.state.sketch.rect }); }
+            _this.state.sketch.mousedown = true;
+            // console.log("andgle" + _this.state.sketch.requestAngle);
+ 
+            if(_this.state.sketch.mode == 'drawing' && _this.state.sketch.requestAngle){ _this.state.sketch.arc = new Arc({ params: { x: e.offsetX, y: e.offsetY, radius: 25, startAngle: 60, endAngle: 170 }, mode: 'drawing'}); _this.state.sketch.type = "arc"; return; }
 
-            // console.log(_this.state.sketch.polyline_last.id + "mousedown" + _this.state.sketch.polyline_last.id);
+            if(_this.state.sketch.mode == 'drawing'){ _this.state.sketch.polyline = new Polyline({ points: [{x: e.offsetX, y: e.offsetY }], mode: 'drawing' }); _this.state.sketch.type = "polyline"; }
+            
+            if(_this.state.sketch.mode == 'editing' && _this.state.sketch.type == "polyline"){ _this.state.sketch.polyline = new Polyline({ points: [{x: e.offsetX, y: e.offsetY }], mode: 'editing', id: _this.state.sketch.last.id, rect: _this.state.sketch.rect }); _this.state.sketch.type = "polyline"; }
+            
+            if(_this.state.sketch.mode == 'editing' && _this.state.sketch.type == "arc"){ _this.state.sketch.arc = new Arc({ params: { x: e.offsetX, y: e.offsetY, radius: 25, startAngle: 60, endAngle: 170 }, mode: 'editing', id: _this.state.sketch.last.id, rect: _this.state.sketch.rect }); _this.state.sketch.type = "arc"; }
+
+
+            // console.log(_this.state.sketch.last.id + "mousedown" + _this.state.sketch.last.id);
             // console.log(e);
         });
 
@@ -585,9 +592,12 @@ const _this = {
 
             e.preventDefault();
 
-            if(_this.state.sketch.polyline && _this.state.sketch.mode == 'drawing') _this.state.sketch.polyline.setCoords({ points: [{x: e.offsetX, y: e.offsetY }], mode: 'drawing' });
+            if(_this.state.sketch.polyline && _this.state.sketch.mode == 'drawing' && _this.state.sketch.type == "polyline") _this.state.sketch.polyline.setCoords({ points: [{x: e.offsetX, y: e.offsetY }], mode: 'drawing' });
 
-            if(_this.state.sketch.polyline && _this.state.sketch.mode == 'editing') _this.state.sketch.polyline.setCoords({ points: [{x: e.offsetX, y: e.offsetY }], mode: 'editing' });
+            if(_this.state.sketch.polyline && _this.state.sketch.mode == 'editing' && _this.state.sketch.type == "polyline") _this.state.sketch.polyline.setCoords({ points: [{x: e.offsetX, y: e.offsetY }], mode: 'editing' });
+
+            if(_this.state.sketch.arc && _this.state.sketch.mode == 'editing' && _this.state.sketch.type == "arc"){ _this.state.sketch.arc = new Arc({ params: { x: e.offsetX, y: e.offsetY, radius: 25, startAngle: 60, endAngle: 170 }, mode: 'editing', id: _this.state.sketch.last.id, rect: _this.state.sketch.rect }); _this.state.sketch.type = "arc"; }
+
         });
 
         // line draw listener end
@@ -595,27 +605,35 @@ const _this = {
 
             e.preventDefault();
 
+            _this.state.sketch.mousedown = false;
+
             if(_this.state.sketch.polyline && _this.state.sketch.mode == 'drawing'){
 
                 _this.state.sketch.polyline.setEndCoords({ points: [{x: e.offsetX, y: e.offsetY }], mode: 'drawing' });
             }
 
-            if(_this.state.sketch.polyline && (_this.state.sketch.mode == 'drawing' || _this.state.sketch.mode == 'editing')){
+            if((_this.state.sketch.polyline || _this.state.sketch.arc) && (_this.state.sketch.mode == 'drawing' || _this.state.sketch.mode == 'editing')){
                 _this.refreshFields();
             }
             
             _this.state.sketch.polyline = null;
+            _this.state.sketch.arc = null;
 
             // circle mouse in out listener
             if(document.querySelector('#svg rect')) for( let el of document.querySelectorAll('#svg rect') ){
 
                 el.onmouseover = (e) => {
 
-                    _this.state.sketch.rect = e.currentTarget.dataset.id;
-                    _this.state.sketch.polyline_last.id = e.currentTarget.dataset.id.replace('start','').replace('end','');
+                    if(_this.state.sketch.mousedown) return;
+
+                    _this.state.sketch.rect = e.currentTarget.dataset.rect;
+                    _this.state.sketch.last.id = e.currentTarget.dataset.id.replace('start','').replace('end','');
+                    _this.state.sketch.type = e.currentTarget.dataset.type;
                 };
 
                 el.onmouseleave = (e) => {
+
+                    if(_this.state.sketch.mousedown) return;
 
                     _this.state.sketch.rect = null;
                 };
@@ -626,7 +644,21 @@ const _this = {
 
                 el.onmouseover = (e) => {
 
-                    _this.state.sketch.polyline_last.id = e.currentTarget.dataset.id;
+                    if(_this.state.sketch.mousedown) return;
+
+                    _this.state.sketch.last.id = e.currentTarget.dataset.id;
+                };
+            }
+
+            // path arc mouse in out listener
+            if(document.querySelector('#svg path')) for( let el of document.querySelectorAll('#svg path') ){
+
+                el.onmouseover = (e) => {
+
+                    if(_this.state.sketch.mousedown) return;
+
+                    // console.log("over " + e.currentTarget.dataset.id);
+                    _this.state.sketch.last.id = e.currentTarget.dataset.id;
                 };
             }
         });
@@ -644,10 +676,20 @@ const _this = {
         // remove listener
         let keypress = (e) => {
 
+            // console.log('key' + e.which);
+
+            // request angle drawing
+            if(e.which == 65 && _this.state.sketch.mode == 'drawing'){  _this.state.sketch.requestAngle = true; console.log('REQUESTING'); setTimeout(() => { _this.state.sketch.requestAngle = false }, 2000); }
+            
+            // cancel drawing on del or ESC buttons
+            if((e.which == 8 || e.which == 27) && _this.state.sketch.mode == 'drawing' && _this.state.sketch.polyline){ console.log('removing'); document.querySelector('#svg g[data-id="' + _this.state.sketch.polyline.getID() + '"]').remove(); }
+            
             if(e.which != 8 || _this.state.sketch.mode != 'editing' || !_this.state.sketch.hover) return;
 
-            if(document.querySelector('#svg g[data-id="' + _this.state.sketch.polyline_last.id + '"]')) document.querySelector('#svg g[data-id="' + _this.state.sketch.polyline_last.id + '"]').remove();
-            if(document.querySelector('.input-fields #field' + _this.state.sketch.polyline_last.id)) document.querySelector('.input-fields #field' + _this.state.sketch.polyline_last.id).remove();
+            // delete lines
+            if(document.querySelector('#svg g[data-id="' + _this.state.sketch.last.id + '"]')) document.querySelector('#svg g[data-id="' + _this.state.sketch.last.id + '"]').remove();
+            if(document.querySelector('.input-fields #field' + _this.state.sketch.last.id)) document.querySelector('.input-fields #field' + _this.state.sketch.last.id).remove();
+            if(document.querySelector('.svg-input[data-id="' + _this.state.sketch.last.id + '"]')) document.querySelector('.svg-input[data-id="' + _this.state.sketch.last.id + '"]').remove();
         }
         document.removeEventListener('keydown', keypress, true);
         document.addEventListener('keydown', keypress, true);
@@ -665,6 +707,7 @@ const _this = {
 
                     let i = new Image();
                     i.onload = function(){
+                        
                         d.querySelector(sel+_fi).setAttribute('src', img);
                         d.querySelector(sel+_fi).parentElement.querySelector('.remove').classList.remove('hd');
                     };
@@ -676,12 +719,58 @@ const _this = {
     // sync html lines with HTML fields
     refreshFields: () => {
 
+        // console.log('refreshFields');
+
+        let htmlLabels = "";
+
+        let refreshAgain = false;
+
         // get all lines
-        if(document.querySelector('#svg g')) for(let el of document.querySelectorAll('#svg g') ){
+        if(document.querySelector('#svg g')) for(let el of document.querySelectorAll('#svg g')){
 
-            let id = el.dataset.id;
+            let id = el.dataset.id, obj = {}, x, y;
+            let label = document.querySelector('#field'+id+' .field-label') ? document.querySelector('#field'+id+' .field-label').value : _this.getNextLabel(el.dataset.type)[0];
 
-            let obj = { id:id, label:'', default:0, min:0, max:0, points: el.querySelector('polyline').getAttribute('points') };
+            // if(label == '...') refreshAgain = true;
+
+            switch(el.dataset.type){
+
+                case 'polyline':
+                    obj = { id:id, label:label, default:0, min:0, max:0, type:el.dataset.type, params:{}, points:el.querySelector('polyline').getAttribute('points') };
+         
+                    let points = obj.points.split(' ');
+                    x = (parseFloat(points[0]) + parseFloat(points[2])) / 2;
+                    y = (parseFloat(points[1]) + parseFloat(points[3])) / 2;
+                    
+                    htmlLabels += `
+                    <div class="svg-input m-2 lable-line" style="left:${ x }px;top:${ y }px;" data-id="${ obj.id }">
+                        <label for="input${ obj.label }">${ obj.label }</label>
+                    </div>
+                    `;
+                    
+                    break;
+                case 'arc':
+                    obj = { id:id, label:label, default:0, min:0, max:0, type:el.dataset.type, params:JSON.parse(unescape(el.dataset.params)), points:el.querySelector('path').getAttribute('d') };
+
+                    let newDeg = obj.params.startAngle + ((obj.params.endAngle - obj.params.startAngle) / 2); // newDeg = newDeg < 0 ? newDeg * (-1) : 360-newDeg; 
+
+                    // console.log(obj.params.startAngle + " " + obj.params.endAngle);
+                    // console.log(newDeg);
+
+                    x = obj.params.x + obj.params.radius / 2 + (((obj.params.radius*2) * Math.cos(degToRad(newDeg)))) + 5;
+                    y = obj.params.y + obj.params.radius / 2 + (((obj.params.radius*2) * Math.sin(degToRad(newDeg)))) - 5;
+
+                    // x = obj.params.x + 40;
+                    // y = obj.params.y + 40;
+
+                    htmlLabels += `
+                    <div class="svg-input m-2 lable-angle" style="left:${ x }px;top:${ y }px;" data-id="${ obj.id }">
+                        <label for="input${ obj.label }">${ obj.label }°</label>
+                    </div>
+                    `;
+
+                    break;
+            }
 
             // struct field
             let html = _this.structInputRow(obj);
@@ -694,10 +783,15 @@ const _this = {
 
                 // update existing fields with new points only
                 document.querySelector('#field'+id).setAttribute('data-points', obj.points);
+                document.querySelector('#field'+id).setAttribute('data-params', escape(JSON.stringify(obj.params)));
             }
 
             _this.listeners.inputFieldListeners();
         }
+
+        document.querySelector('.labels').innerHTML = htmlLabels;
+
+        onChange('.field-label', _this.listeners.inputFieldChange);
     },
     // general method for image upload
     uploadImages: () => {

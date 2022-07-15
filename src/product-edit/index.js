@@ -1,6 +1,6 @@
 // js dependencies
 import { headers, showLoader, hideLoader, initHeader, initFooter, initBreadcrumbs, parseApiError, getCookie, onClick, onChange, simulateClick, spaceID, loadScript, toast, link } from '@kenzap/k-cloud';
-import { getProductId, makeNumber, numsOnly, priceFormat, onlyNumbers } from "../_/_helpers.js"
+import { getProductId, makeNumber, numsOnly, priceFormat, onlyNumbers, loadAddon } from "../_/_helpers.js"
 import { simpleTags } from "../_/_ui.js"
 import { HTMLContent } from "../_/_cnt_product_edit.js"
 
@@ -96,12 +96,9 @@ const _this = {
                 // footer note
                 initFooter(__('Created by %1$Kenzap%2$. ❤️ Licensed %3$GPL3%4$.', '<a class="text-muted" href="https://kenzap.com/" target="_blank">', '</a>', '<a class="text-muted" href="https://github.com/kenzap/ecommerce" target="_blank">', '</a>'), '');
 
-                let cb = () => {
-
-                    console.log('loaded');
-                }
-                // third party scripts
-                loadScript('/sk-design/index.js', cb);
+                // dependencies
+                loadAddon('/sk-design/index.js', '1.0');
+                loadAddon('/sk-design/styles.css', '1.0');
             }
         })
         .catch(error => { parseApiError(error); });

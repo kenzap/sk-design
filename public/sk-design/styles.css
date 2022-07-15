@@ -1,0 +1,57 @@
+#svg g path,
+#svg g polyline {
+  stroke-width: 3px;
+  transition: stroke-width 0.3s;
+}
+
+#svg g:hover polyline {
+  stroke-width: 5px !important;
+}
+
+#svg g:hover path {
+  stroke-width: 5px !important;
+}
+
+.svg-input {
+  position: absolute;
+  z-index: 3;
+  transform: translate(-32px, -32px);
+}
+
+.svg-input.lable-line label {
+  color: #00F;
+}
+
+.svg-input.lable-angle label {
+  color: #ff007d;
+}
+
+.svg-input:hover {
+  z-index: 6;
+}
+
+.svg-input label {
+  font-size: 16px;
+  font-weight: bold;
+  text-shadow: 0 0 1px #fff, 0 0 2px #fff;
+}
+
+.svg-input:hover input, .svg-input input:focus {
+  opacity: 1;
+}
+
+.sketch-cont .remove {
+  display: none;
+}
+
+.sketch-cont[data-mode=preview] .remove {
+  display: inline-block;
+  position: absolute;
+  font-weight: bold;
+  float: right;
+  margin-left: -24px;
+  line-height: 1;
+  font-size: 24px;
+  padding: 4px;
+  color: #76838f;
+}

@@ -1,4 +1,4 @@
-# SK-design
+# SK-Design
 
 Extend E-commerce extension with 3D and sketching functionality.
 
