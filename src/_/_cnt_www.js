@@ -12,22 +12,22 @@ export const HTMLContent = () => {
                         </div>
                     </div>
                     <div class="slideset">
-                    <div class="slide"><a href="#" data-cat="${ __attr("Rainwater systems") }" class="cl">${ __html("Rainwater systems") }</a></div>
-                    <div class="slide"><a href="#" data-cat="${ __attr("Window sill") }" class=" cl">${ __html("Window sill") }</a></div>
-                    <div class="slide"><a href="#" data-cat="${ __attr("Stovepipe cap") }" class=" cl">${ __html("Stovepipe cap") }</a></div>
-                    <div class="slide"><a href="#" data-cat="${ __attr("Sheet metal") }" class=" cl">${ __html("Sheet metal") }</a></div>
-                    <div class="slide"><a href="#" data-cat="${ __attr("Roofing") }" class=" cl">${ __html("Roofing") }</a></div>
-                    <div class="slide"><a href="#" data-cat="${ __attr("Flange") }" class=" cl">${ __html("Flange") }</a></div>
-                    <div class="slide"><a href="#" data-cat="${ __attr("Eaves element") }" class=" cl">${ __html("Eaves element") }</a></div>
-                    <div class="slide"><a href="#" data-cat="${ __attr("Parapet") }" class=" cl">${ __html("Parapet") }</a></div>
-                    <div class="slide"><a href="#" data-cat="${ __attr("Rake edge") }" class=" cl">${ __html("Rake edge") }</a></div>
-                    <div class="slide"><a href="#" data-cat="${ __attr("Ridge") }" class=" cl">${ __html("Ridge") }</a></div>
-                    <div class="slide"><a href="#" data-cat="${ __attr("Roof hatch") }" class=" cl">${ __html("Roof hatch") }</a></div>
-                    <div class="slide"><a href="#" data-cat="${ __attr("Snow barrier") }" class=" cl">${ __html("Snow barrier") }</a></div>
-                    <div class="slide"><a href="#" data-cat="${ __attr("Ventilation") }" class=" cl">${ __html("Ventilation") }</a></div>
-                    <div class="slide"><a href="#" data-cat="${ __attr("Roof valley") }" class=" cl">${ __html("Roof valley") }</a></div>
-                    <div class="slide"><a href="#" data-cat="${ __attr("Drip edge") }" class=" cl">${ __html("Drip edge") }</a></div>
-                    <div class="slide"><a href="#" data-cat="${ __attr("Other Designs") }" class=" cl d-none">${ __html("Other Designs") }</a></div>
+                        <div class="slide"><a href="#" data-cat="${ __attr("Rainwater systems") }" class="cl">${ __html("Rainwater systems") }</a></div>
+                        <div class="slide"><a href="#" data-cat="${ __attr("Window sill") }" class=" cl">${ __html("Window sill") }</a></div>
+                        <div class="slide"><a href="#" data-cat="${ __attr("Stovepipe cap") }" class=" cl">${ __html("Stovepipe cap") }</a></div>
+                        <div class="slide d-none"><a href="#" data-cat="${ __attr("Sheet metal") }" class=" cl">${ __html("Sheet metal") }</a></div>
+                        <div class="slide"><a href="#" data-cat="${ __attr("Roofing") }" class=" cl">${ __html("Roofing") }</a></div>
+                        <div class="slide"><a href="#" data-cat="${ __attr("Flange") }" class=" cl">${ __html("Flange") }</a></div>
+                        <div class="slide"><a href="#" data-cat="${ __attr("Eaves element") }" class=" cl">${ __html("Eaves element") }</a></div>
+                        <div class="slide"><a href="#" data-cat="${ __attr("Parapet") }" class=" cl">${ __html("Parapet") }</a></div>
+                        <div class="slide"><a href="#" data-cat="${ __attr("Rake edge") }" class=" cl">${ __html("Rake edge") }</a></div>
+                        <div class="slide"><a href="#" data-cat="${ __attr("Ridge") }" class=" cl">${ __html("Ridge") }</a></div>
+                        <div class="slide"><a href="#" data-cat="${ __attr("Roof hatch") }" class=" cl">${ __html("Roof hatch") }</a></div>
+                        <div class="slide"><a href="#" data-cat="${ __attr("Snow barrier system") }" class=" cl">${ __html("Snow barrier system") }</a></div>
+                        <div class="slide"><a href="#" data-cat="${ __attr("Ventilation") }" class=" cl">${ __html("Ventilation") }</a></div>
+                        <div class="slide"><a href="#" data-cat="${ __attr("Roof valley") }" class=" cl">${ __html("Roof valley") }</a></div>
+                        <div class="slide"><a href="#" data-cat="${ __attr("Drip edge") }" class=" cl">${ __html("Drip edge") }</a></div>
+                        <div class="slide"><a href="#" data-cat="${ __attr("Other Designs") }" class=" cl d-none">${ __html("Other Designs") }</a></div>
                     </div>
                     <div class="arrow-holder-next arrow-holder" style="display: none;">
                         <div class="nav-next arrow">
@@ -35,11 +35,6 @@ export const HTMLContent = () => {
                         </div>
                     </div>
                 </div>
-            </div>
-            <div class="filters-area d-none">
-                <a data-kbox="" data-src="#filters-box" href="javascript:;" class="add-filters btn-secondary has-filter">
-                    + Add Filters                                <span class="tickicon"></span>
-                </a>
             </div>
         </div>
 
@@ -64,12 +59,12 @@ export const HTMLContent = () => {
 
             <div class="accordion-item border-0">
             <h2 class="accordion-header" id="acc-heading-2">
-                <button class="accordion-button first collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#acc-2" aria-expanded="false" aria-controls="panelsStayOpen-collapseTwo" data-cats="${ __attr("Stovepipe cap") }|${ __attr("Drip edge") }|${ __attr("Flange") }|${ __attr("Rake edge") }|${ __attr("Ridge") }|${ __attr("Roof hatch") }|${ __attr("Roofing panel") }|${ __attr("Ventilation Element") }">
-                ${ __html('SHEET METAL ROOFING ELEMENTS') }
+                <button class="accordion-button first collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#acc-2" aria-expanded="false" aria-controls="panelsStayOpen-collapseTwo" data-cats="${ __attr("Stovepipe cap") }|${ __attr("Drip edge") }|${ __attr("Flange") }|${ __attr("Rake edge") }|${ __attr("Ridge") }|${ __attr("Roof hatch") }|${ __attr("Roofing panel") }|${ __attr("Ventilation Element") }|${ __attr("Snow Barrier System") }">
+                ${ __html('ROOFING ELEMENTS') }
                 </button>
             </h2>
             <div id="acc-2" class="accordion-collapse collapse" aria-labelledby="acc-heading-2">
-                <div class="accordion-body p-0 pt-4 bg-light row row-cols-1 row-cols-md-2 row-cols-lg-3 g-2 g-lg-3" data-cats="Stovepipe cap|Drip edge|Flange|Rake edge|Ridge|Roof hatch|Roofing panel|Ventilation Element">
+                <div class="accordion-body p-0 pt-4 bg-light row row-cols-1 row-cols-md-2 row-cols-lg-3 g-2 g-lg-3" data-cats="Stovepipe cap|Drip edge|Flange|Rake edge|Ridge|Roof hatch|Roofing panel|Ventilation Element|Snow Barrier System">
 
 
                 </div>
@@ -86,7 +81,6 @@ export const HTMLContent = () => {
                 <div class="accordion-body p-0 pt-4 bg-light row row-cols-1 row-cols-md-2 row-cols-lg-3 g-2 g-lg-3" >
 
                 
-
                 </div>
             </div>
             </div>
@@ -101,12 +95,11 @@ export const HTMLContent = () => {
                 <div class="accordion-body p-0 pt-4 bg-light row row-cols-1 row-cols-md-2 row-cols-lg-3 g-2 g-lg-3" data-cats="Rainwater systems">
 
                 
-
                 </div>
             </div>
             </div>
 
-            <div class="accordion-item border-0">
+            <div class="accordion-item border-0 d-none">
             <h2 class="accordion-header" id="acc-heading-5">
                 <button class="accordion-button  collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#acc-5" aria-expanded="false" aria-controls="panelsStayOpen-collapseThree" data-cats="${ __attr("Sheet metal") }">
                 ${ __html('SHEET METAL') }

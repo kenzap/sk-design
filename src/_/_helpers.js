@@ -1,10 +1,32 @@
 import { getCookie, getSiteId, simulateClick, headers } from '@kenzap/k-cloud';
 
+export const CDN = "https://cdn.kenzap.cloud/";
 export const API_KEY = "Qz3fOs8Ghi7rpaW8BOlNgUyo7ANWYoKbRoUa8UkYd2I4FlAgUYFqzPM33IxqoFYa";
 
 export const spaceID = () => {
 
     return "1002170"
+}
+
+export const sortAlphaNum = (a, b) => a['title'].localeCompare(b['title'], 'en', { numeric: true })
+
+/**
+* Generates a random string
+* 
+* @param int length_
+* @return string
+*/
+export const randomString = (length_) => {
+
+    let chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghiklmnopqrstuvwxyz'.split('');
+    if (typeof length_ !== "number") {
+        length_ = Math.floor(Math.random() * chars.length_);
+    }
+    let str = '';
+    for (let i = 0; i < length_; i++) {
+        str += chars[Math.floor(Math.random() * chars.length)];
+    }
+    return str;
 }
 
 export const stringToHash = str => {
@@ -248,8 +270,8 @@ export const timeConverterAgo = (__, now, time) => {
     // parse as elapsed time
     let past = now - time;
     if(past < 60) return __('moments ago');
-    if(past < 3600) return parseInt(past / 60) + ' ' + __('minutes ago');
-    if(past < 86400) return parseInt(past / 60 / 60) + ' ' + __('hours ago');
+    if(past < 3600) return __('%1$ minutes ago', parseInt(past / 60));
+    if(past < 86400) return  __('%1$ hours ago', parseInt(past / 60 / 60));
 
     // process as normal date
     var a = new Date(time * 1000);
@@ -726,6 +748,24 @@ export const loadAddon = (dep, version, cb) => {
 
       break;
     }
+}
+
+/**
+ * @name setCookie
+ * @description Set cookie by its name to all .kenzap.cloud subdomains
+ * @param {string} name - Cookie name.
+ * @param {string} value - Cookie value.
+ * @param {string} days - Number of days when cookie expires.
+ */
+ export const setCookie = (name, value, days) => {
+
+    let expires = "";
+    if (days) {
+        let date = new Date();
+        date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+        expires = ";expires=" + date.toUTCString();
+    }
+    document.cookie = name + "=" + (escape(value) || "") + expires + ";path=/"; 
 }
 
 export const getCurrencies = () => {

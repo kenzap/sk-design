@@ -571,6 +571,10 @@ body {
   font-family: Roboto;
 }
 
+body.modal-open {
+  overflow: hidden;
+}
+
 /* bootstrap */
 .badge.bg-danger {
   background-color: #dc3545 !important;
@@ -763,6 +767,14 @@ nav.menu-cont[data-state=open] ul li:nth-child(3) {
 nav.menu-cont[data-state=open] ul li:nth-child(4) {
   -webkit-transition-delay: 0.64s;
   transition-delay: 0.64s;
+  -webkit-transform: translateX(0px);
+  transform: translateX(0px);
+  opacity: 1;
+}
+
+nav.menu-cont[data-state=open] ul li:nth-child(5) {
+  -webkit-transition-delay: 0.8s;
+  transition-delay: 0.8s;
   -webkit-transform: translateX(0px);
   transform: translateX(0px);
   opacity: 1;
@@ -1046,20 +1058,20 @@ select.input-color:focus {
 }
 
 .accordion-button:not(.collapsed) {
-  color: #dc3545;
+  color: #495057;
 }
 
 .accordion-button:not(.collapsed) {
-  background-color: #fcf0ef;
+  background-color: #e9ecef;
 }
 
 .accordion-button:focus {
-  border-color: #fcf0ef;
-  box-shadow: 0 0 0 0.25rem rgba(223, 25, 25, 0.25);
+  border-color: #e9ecef;
+  box-shadow: 0 0 0 0.25rem rgba(219, 219, 219, 0.25);
 }
 
 .accordion-button:not(.collapsed)::after {
-  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%23dc3545'%3e%3cpath fill-rule='evenodd' d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/%3e%3c/svg%3e");
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%495057'%3e%3cpath fill-rule='evenodd' d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/%3e%3c/svg%3e");
 }
 
 .breadcrumb:empty {
@@ -1067,7 +1079,7 @@ select.input-color:focus {
 }
 
 .deemphasize {
-  opacity: 0.01;
+  opacity: 0.5;
   transition: opacity 0.24s;
 }
 
@@ -1079,9 +1091,15 @@ select.input-color:focus {
   cursor: pointer;
 }
 
+.sketch-3d {
+  width: 550px;
+  height: 550px;
+}
+
+.sketch-3d X3D,
 .sketch #svg {
-  width: 100%;
-  height: 100%;
+  width: 550px;
+  height: 550px;
   display: block;
   position: absolute;
   top: 0px;
@@ -1101,16 +1119,16 @@ select.input-color:focus {
   fill: rgb(255, 255, 255);
 }
 
-.sketch #svg path {
-  stroke-width: 3px;
-  stroke: #dc3545;
-  fill: rgba(255, 255, 255, 0);
-}
-
 .sketch #svg polyline {
   stroke-width: 3px;
   stroke: #dc3545;
   fill: rgb(255, 255, 255);
+}
+
+.sketch #svg path {
+  stroke-width: 3px;
+  stroke: #c2c2c2;
+  fill: rgba(255, 255, 255, 0);
 }
 
 .sketch .svg-input {
@@ -1123,11 +1141,23 @@ select.input-color:focus {
   z-index: 6;
 }
 
-.sketch .svg-input label {
+.sketch .svg-input.polyline label {
   color: #dc3545;
+}
+
+.sketch .svg-input.arc label {
+  color: #c2c2c2;
+}
+
+.sketch .svg-input.arc input.form-control:focus {
+  border-color: rgba(194, 194, 194, 0.7);
+  box-shadow: 0 0 0 0.25rem rgba(194, 194, 194, 0.3);
+}
+
+.sketch .svg-input label {
   font-size: 19px;
   font-weight: bold;
-  text-shadow: 0 0 1px #fff, 0 0 2px #fff;
+  text-shadow: 0 0 1px #d4d4d4, 0 0 1px #d4d4d4;
 }
 
 .sketch .svg-input input {
@@ -1136,6 +1166,62 @@ select.input-color:focus {
   transition: all 0.24s;
 }
 
+.sketch .svg-input input.bottom_left {
+  transform: translate3d(-47px, 0px, 0px);
+}
+
+.sketch .svg-input input.top_left {
+  transform: translate3d(-47px, -62px, 0px);
+}
+
+.sketch .svg-input input.top_right {
+  transform: translate3d(0px, -62px, 0px);
+}
+
+.sketch .svg-input input.left {
+  transform: translate3d(-68px, -31px, 0px);
+}
+
+.sketch .svg-input input.right {
+  transform: translate3d(20px, -31px, 0px);
+}
+
 .sketch .svg-input:hover input, .sketch .svg-input input:focus {
   opacity: 1;
+}
+
+.sketch-3d {
+  overflow: hidden;
+}
+
+.sketch-3d-switch {
+  position: absolute;
+  z-index: 10;
+}
+
+.form-switch .form-check-input {
+  height: 16px;
+  width: 28px;
+}
+
+.form-switch .form-check-input:focus {
+  border-color: rgba(0, 0, 0, 0.25);
+  outline: 0;
+  box-shadow: 0 0 0 0 rgba(0, 0, 0, 0);
+  background-image: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3e%3ccircle r='3' fill='rgba(0,0,0,0.25)'/></svg>");
+}
+
+.form-switch .form-check-input:checked {
+  background-color: #dc3545;
+  border-color: #dc3545;
+  border: none;
+  background-image: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3e%3ccircle r='3' fill='rgba(255,255,255,1.0)'/></svg>");
+}
+
+.input-parts {
+  max-width: 460px;
+}
+
+.btn.set-sketch-view.btn-outline-secondary:hover {
+  color: white !important;
 }

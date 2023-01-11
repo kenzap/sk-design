@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns='http://www.w3.org/1999/xhtml'>
+  <head>
+    <script type='text/javascript' src='http://www.x3dom.org/download/x3dom.js'> </script>
+    <link rel='stylesheet' type='text/css' href='http://www.x3dom.org/download/x3dom.css'></link>
+  </head>
+  <button onclick="document.getElementById('Iso').setAttribute('set_bind','true');">Iso</button>
+  <button onclick="document.getElementById('Front').setAttribute('set_bind','true');">Front</button>
+  <button onclick="document.getElementById('Back').setAttribute('set_bind','true');">Back</button>
+  <button onclick="document.getElementById('Right').setAttribute('set_bind','true');">Right</button>
+  <button onclick="document.getElementById('Left').setAttribute('set_bind','true');">Left</button>
+  <button onclick="document.getElementById('Top').setAttribute('set_bind','true');">Top</button>
+  <button onclick="document.getElementById('Bottom').setAttribute('set_bind','true');">Bottom</button>
+<X3D profile="Immersive" version="3.2" xmlns:xsd="http://www.w3.org/2001/XMLSchema-instance" xsd:noNamespaceSchemaLocation="http://www.web3d.org/specifications/x3d-3.2.xsd" width="1280px"  height="1024px">
+  <head>
+    <meta name="generator" content="FreeCAD"/>
+    <meta name="author" content=""/>
+    <meta name="company" content=""/>
+  </head>
+  <Scene>
+    <Viewpoint id="Iso" centerOfRotation="500 -66.2624 -30.893" position="1219.06 -785.319 688.164" orientation="0.742906 0.307722 0.594473 1.21712" description="camera" fieldOfView="0.9"></Viewpoint>
+    <Viewpoint id="Front" centerOfRotation="500 -66.2624 -30.893" position="500 -1311.71 -30.893" orientation="1 0 0 1.5708" description="camera" fieldOfView="0.9"></Viewpoint>
+    <Viewpoint id="Back" centerOfRotation="500 -66.2624 -30.893" position="500 1179.18 -30.893" orientation="0 0.707107 0.707107 3.14159" description="camera" fieldOfView="0.9"></Viewpoint>
+    <Viewpoint id="Right" centerOfRotation="500 -66.2624 -30.893" position="1745.44 -66.2624 -30.893" orientation="0.57735 0.57735 0.57735 2.09439" description="camera" fieldOfView="0.9"></Viewpoint>
+    <Viewpoint id="Left" centerOfRotation="500 -66.2624 -30.893" position="-745.444 -66.2624 -30.893" orientation="-0.57735 0.57735 0.57735 4.18879" description="camera" fieldOfView="0.9"></Viewpoint>
+    <Viewpoint id="Top" centerOfRotation="500 -66.2624 -30.893" position="500 -66.2624 1214.55" orientation="0 0 1 0" description="camera" fieldOfView="0.9"></Viewpoint>
+    <Viewpoint id="Bottom" centerOfRotation="500 -66.2624 -30.893" position="500 -66.2624 -1276.34" orientation="1 0 0 3.14159" description="camera" fieldOfView="0.9"></Viewpoint>
+    <Group>
+      <Group DEF="o0">
+        <Group DEF="o1">
+          <Transform DEF="o2"
+            translation="0 0 0" 
+            rotation="0 0 1  0" 
+            scale="1 1 1" 
+            scaleOrientation="0 0 1  0" 
+            center="0 0 0" >
+            <Shape DEF="o3">
+              <Appearance DEF="o4">
+                <Material DEF="o5"/>
+              </Appearance>
+              <IndexedFaceSet DEF="SoFCIndexedFaceSet"
+                coordIndex="0, 1, 3, -1, 3, 1, 2, -1, 4, 0, 5, -1, 5, 0, 3, -1, 6, 4, 7, -1, 7, 4, 5, -1, 8, 6, 9, -1, 9, 6, 7, -1, 10, 8, 11, -1, 11, 8, 9, -1, 12, 10, 13, -1, 13, 10, 11, -1, 14, 12, 15, -1, 15, 12, 13, -1, 16, 14, 17, -1, 17, 14, 15, -1, 18, 16, 19, -1, 19, 16, 17, -1, 31, 20, 30, -1, 30, 20, 21, -1, 30, 21, 29, -1, 29, 21, 22, -1, 29, 22, 28, -1, 28, 22, 23, -1, 28, 23, 27, -1, 27, 23, 24, -1, 27, 24, 26, -1, 26, 24, 25, -1, 26, 25, 19, -1, 19, 25, 18, -1, 32, 20, 33, -1, 33, 20, 31, -1, 45, 34, 44, -1, 44, 34, 35, -1, 44, 35, 43, -1, 43, 35, 36, -1, 43, 36, 42, -1, 42, 36, 37, -1, 42, 37, 41, -1, 41, 37, 38, -1, 41, 38, 40, -1, 40, 38, 39, -1, 40, 39, 33, -1, 33, 39, 32, -1, 46, 34, 47, -1, 47, 34, 45, -1, 57, 48, 56, -1, 56, 48, 49, -1, 56, 49, 55, -1, 55, 49, 50, -1, 55, 50, 54, -1, 54, 50, 51, -1, 54, 51, 53, -1, 53, 51, 52, -1, 53, 52, 47, -1, 47, 52, 46, -1, 58, 48, 59, -1, 59, 48, 57, -1, 2, 1, 63, -1, 63, 1, 60, -1, 63, 60, 61, -1, 58, 59, 61, -1, 61, 59, 62, -1, 61, 62, 63, -1, 63, 62, 2, -1, 2, 62, 59, -1, 2, 59, 7, -1, 7, 59, 57, -1, 7, 57, 9, -1, 9, 57, 56, -1, 9, 56, 55, -1, 55, 54, 9, -1, 9, 54, 53, -1, 9, 53, 47, -1, 9, 47, 11, -1, 11, 47, 45, -1, 11, 45, 44, -1, 43, 27, 44, -1, 44, 27, 26, -1, 44, 26, 11, -1, 11, 26, 13, -1, 13, 26, 19, -1, 13, 19, 15, -1, 15, 19, 17, -1, 27, 43, 28, -1, 28, 43, 42, -1, 28, 42, 29, -1, 29, 42, 41, -1, 29, 41, 33, -1, 33, 41, 40, -1, 33, 31, 29, -1, 29, 31, 30, -1, 7, 5, 2, -1, 2, 5, 3, -1, 61, 1, 58, -1, 58, 1, 6, -1, 58, 6, 48, -1, 48, 6, 8, -1, 48, 8, 49, -1, 49, 8, 50, -1, 50, 8, 51, -1, 51, 8, 52, -1, 52, 8, 46, -1, 46, 8, 34, -1, 34, 8, 10, -1, 34, 10, 35, -1, 35, 10, 12, -1, 35, 12, 25, -1, 25, 12, 18, -1, 18, 12, 16, -1, 16, 12, 14, -1, 61, 60, 1, -1, 0, 4, 1, -1, 1, 4, 6, -1, 35, 25, 36, -1, 36, 25, 24, -1, 36, 24, 37, -1, 37, 24, 23, -1, 37, 23, 38, -1, 38, 23, 22, -1, 38, 22, 20, -1, 20, 22, 21, -1, 20, 32, 38, -1, 38, 32, 39, -1" 
+                ccw="TRUE" 
+                solid="FALSE" 
+                convex="TRUE" 
+                creaseAngle="0" >
+                <Coordinate DEF="o6"
+                  point="0 69.214516 -0.24151, 0 -60.609158 -0.24151, 1000 -60.609158 -0.24151, 1000 69.214516 -0.24151, 0 69.214516 -1.24151, 1000 69.214516 -1.24151, 0 -60.609158 -1.24151, 1000 -60.609158 -1.24151, 0 -200.73938 -52.24474, 1000 -200.73938 -52.24474, 0 -200.73938 -60.544533, 1000 -200.73938 -60.544533, 0 -199.73938 -60.544533, 1000 -199.73938 -60.544533, 0 -199.73938 -53.544533, 1000 -199.73938 -53.544533, 0 -198.73938 -53.544533, 1000 -198.73938 -53.544533, 0 -198.73938 -60.544533, 1000 -198.73938 -60.544533, 0 -199.73938 -61.544533, 0 -199.48056 -61.510456, 0 -199.23938 -61.410557, 0 -199.03227 -61.251637, 0 -198.87335 -61.044533, 0 -198.77345 -60.803352, 1000 -198.77345 -60.803352, 1000 -198.87335 -61.044533, 1000 -199.03227 -61.251637, 1000 -199.23938 -61.410557, 1000 -199.48056 -61.510456, 1000 -199.73938 -61.544533, 0 -200.73938 -61.544533, 1000 -200.73938 -61.544533, 0 -201.73938 -60.544533, 0 -201.70531 -60.803352, 0 -201.60541 -61.044533, 0 -201.44649 -61.251637, 0 -201.23938 -61.410557, 0 -200.9982 -61.510456, 1000 -200.9982 -61.510456, 1000 -201.23938 -61.410557, 1000 -201.44649 -61.251637, 1000 -201.60541 -61.044533, 1000 -201.70531 -60.803352, 1000 -201.73938 -60.544533, 0 -201.73938 -52.24474, 1000 -201.73938 -52.24474, 0 -201.08141 -51.305046, 0 -201.29857 -51.415703, 0 -201.48253 -51.575607, 0 -201.62233 -51.775269, 0 -201.70967 -52.002815, 1000 -201.70967 -52.002815, 1000 -201.62233 -51.775269, 1000 -201.48253 -51.575607, 1000 -201.29857 -51.415703, 1000 -201.08141 -51.305046, 0 -60.95118 -0.30181801, 1000 -60.95118 -0.30181801, 0 -60.72525 -0.248272, 0 -60.839775 -0.26846501, 1000 -60.839775 -0.26846501, 1000 -60.72525 -0.248272" />
+              </IndexedFaceSet>
+            </Shape>
+          </Transform>
+        </Group>
+      </Group>
+    </Group>
+  </Scene>
+</X3D>
+</html>

@@ -37,12 +37,11 @@ return `
                                         <div class="clearfix"></div>
                                     </div>
 
-                                    <div class="mb-3 mw">
+                                    <div class="mb-3 " style="max-width:600px;overflow:scroll;">
                                         <label class="banner-title-l form-label" for="p-test">${ __html('Input fields') }</label>
                                         <div class="input-fields">
 
                                         </div>
-                                        
                                         <p class="form-text"> </p>
                                     </div>
 
@@ -50,6 +49,7 @@ return `
                                         <label class="form-label" for="calc_price">${ __html('Calculate price') }</label>
                                         <select id="calc_price" class="form-select inp" >
                                             <option value="default">${ __html('Default price') }</option>
+                                            <option value="variable">${ __html('Variable') }</option>
                                             <option value="sketch">${ __html('By sketch') }</option>
                                             <option value="formula">${ __html('By formula') }</option>
                                             <option value="complex">${ __html('Complex product') }</option>
@@ -57,22 +57,57 @@ return `
                                         <p class="form-text"> </p>
                                     </div>
 
-                                    <div class="mb-3 mw">
+                                    <div class="mb-3 mw variable_prices_cont">
+                                        <input type="hidden" id="price" value="" />
+                                        <button class="btn btn-sm btn-outline-primary btn-view-variations mb-2" type="button">${ __html('View variations') }</button>
+                                        <p class="form-text">${ __html('Override default prices by clicking on the button above.') }</p>
+                                    </div>
+
+                                    <div class="mb-3 mw formula_cont d-none">
                                         <label class="form-label" for="formula">${ __html('Formula footage') }</label>
                                         <input id="formula" type="text" class="form-control inp" placeholder="${ __html('(A + B) * L') }">
                                         <p class="form-text formula-hint">${ __html('Square formula to calculate price.') }</p>
                                     </div>
 
-                                    <div class="mb-3 mw">
-                                        <label class="form-label" for="formula_price">${ __html('Formula price') }</label>
-                                        <input id="formula_price" type="text" class="form-control inp" placeholder="${ __html('B>1000?1.80:0.90') }">
-                                        <p class="form-text formula_price-hint">${ __html('Price formula to add as an extra to the price.') }</p>
+                                    <div class="mb-3 mw fwl_cont">
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <label class="form-label" for="formula">${ __html('Formula width') }</label>
+                                                <input id="formula_width" type="text" class="form-control inp" placeholder="${ __html('A + B + C') }">
+                                                <p class="form-text formula_width-hint">${ __html('Product width in mm.') }</p>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label class="form-label" for="formula">${ __html('Formula length') }</label>
+                                                <input id="formula_length" type="text" class="form-control inp" placeholder="${ __html('L') }">
+                                                <p class="form-text formula_length-hint">${ __html('Product length in mm.') }</p>
+                                            </div>
+                                        </div>
                                     </div>
 
-                                    <div class="mb-3 mw">
-                                        <label class="form-label" for="p-test">${ __html('Test field') }</label>
-                                        <input type="text" class="form-control inp" id="p-test" placeholder="${ __html('Test field..') }">
-                                        <p class="form-text"> </p>
+                                    <div class="mb-3 mw formula_price_cont d-none">
+                                        <label class="form-label" for="formula_price">${ __html('Formula price') }</label>
+                                        <input id="formula_price" type="text" class="form-control inp" placeholder="${ __html('B>1000?1.80:0.90') }">
+                                        <p class="form-text formula_price-hint">${ __html('Final price = Formula footage + Price formula.') }</p>
+                                    </div>
+
+                                    <div class="mb-3 mw parts_cont d-none">
+                                        <h4 id="parts-h" class="card-title mb-4">${ __html('Parts') }</h4>
+                                        <textarea id="parts" class="form-control mw" name="parts" rows="6" data-type="text" style="font-size:13px;font-family: monospace;"></textarea>
+                                        <p class="form-text formula_price-hint">${ __html('Provide one product ID per line.') }</p>
+                                    </div>
+
+                                    <div class="mb-3 mw ">
+                                        <input id="modelling" class="form-check-input inp modelling" name="modelling" type="checkbox" value="0" data-type="checkbox">
+                                        <label class="form-check-label" for="modelling">
+                                            ${ __html('3D Modelling') }
+                                        </label>
+                                        <p class="form-text">${ __html('Enable 3D modelling options when product is previewed.') }</p>
+                                    </div>
+
+                                    <div class="mb-3 mw ">
+                                        <label class="form-label" for="tax_id">${ __html('Tax ID') }</label>
+                                        <input id="tax_id" class="form-control inp tax_id" name="tax_id" type="text" value="0" data-type="text">
+                                        <p class="form-text">${ __html('Tax code for 0 VAT rates.') }</p>
                                     </div>
 
                                     <div class="mb-3 mw">
@@ -87,10 +122,6 @@ return `
                                 <div class="desc-repeater-cont">
 
                                 </div>
-
-                                <h4 id="parts-h" class="card-title mb-4">${ __html('Parts') }</h4>
-                                <textarea id="parts" class="form-control mw" name="parts" rows="6" data-type="text" style="font-size:13px;font-family: monospace;"></textarea>
-                                <p class="form-text formula_price-hint">${ __html('Provide one product ID per line.') }</p>
                             </div>
                         </div>
                     </div>

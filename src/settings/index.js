@@ -1,6 +1,6 @@
 // js dependencies
 import { headers, showLoader, hideLoader, initHeader, initFooter, initBreadcrumbs, parseApiError, getCookie, onClick, onKeyUp, simulateClick, toast, link } from '@kenzap/k-cloud';
-import { getCurrencies, onlyNumbers, priceFormat } from "../_/_helpers.js"
+import { getCurrencies, escape, unescape, onlyNumbers, priceFormat } from "../_/_helpers.js"
 import { HTMLContent } from "../_/_cnt_settings.js"
 
 // where everything happens
@@ -145,7 +145,7 @@ const _this = {
 
                     // console.log('.price-table > tbody [data-parent="'+price.parent+'"]');
                     if(document.querySelector('.price-table > tbody [data-parent="'+price.parent+'"]')) { 
-                        document.querySelector('.price-table > tbody [data-parent="'+price.parent+'"]:last-child').insertAdjacentHTML("afterend", _this.structCoatingRow(price, i));
+                        document.querySelector('.price-table > tbody [data-parent="'+price.parent+'"]').insertAdjacentHTML("afterend", _this.structCoatingRow(price, i));
                     }else{
                         document.querySelector('.price-table > tbody').insertAdjacentHTML("beforeend", _this.structCoatingRow(price, i));
                     }
@@ -275,11 +275,23 @@ const _this = {
 
             if(!c) return;
 
-            let i = e.currentTarget.dataset.i;
+            let hash = unescape(e.currentTarget.dataset.hash);
 
             let prices = JSON.parse(document.querySelector('#price').value);
 
-            prices.splice(i, 1);
+            prices = prices.filter((obj) => { 
+                
+                // console.log(JSON.stringify(obj) + " - "+ hash);
+                return JSON.stringify(obj) != hash
+            });
+
+            // document.querySelector('#price').value = JSON.stringify(prices);
+
+            // let i = e.currentTarget.dataset.i;
+
+            // let prices = JSON.parse(document.querySelector('#price').value);
+
+            // prices.splice(i, 1);
 
             document.querySelector('#price').value = JSON.stringify(prices);
 
@@ -492,7 +504,7 @@ const _this = {
                 </div>
             </td>
             <td class="align-middle text-center pt-2"> 
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#ff0079" class="remove-price bi bi-x-circle po" data-i="${ i}" viewBox="0 0 16 16">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#ff0079" class="remove-price bi bi-x-circle po" data-i="${ i }" data-hash="${ escape(JSON.stringify(obj)) }" viewBox="0 0 16 16">
                     <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"></path>
                     <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"></path>
                 </svg>
